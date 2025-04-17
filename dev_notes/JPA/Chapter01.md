@@ -154,3 +154,56 @@ JPA는 별도의 수정 메서드를 제공하지 않는다.
     객체는 상속이라는 기능을 가지고 있지만 테이블은 상속이라는 기능이 없다
     슈퍼타입&서브타입 관계를 사용하면 상속과 유사한 형태로 테이블 설계[는] 가능
 
+객체를 테이블에 맞추어 모델링
+class Member {
+    String id;  //MEMBER_ID 칼럼 사용
+    Long teanId;    //TEAM_ID FK 칼럼 사용
+    String username;    //USERNAME 칼럼 사용
+}
+
+class Team {
+    Long id;    //TEAM_ID PK 사용
+    String name;    //NAME 칼럼 사용
+}
+
+MEMBER 테이블의 칼럼을 그대로 가져와서 Member 클래스를 만들었다
+객체를 테이블에 저장하거나 조회할 때는 편리하다
+[TEAM_ID 외래 키의 값을 그대로 보관하는 teamId 필드에는 문제가 있다]
+객체는 연관된 객체의 참조를 보관해야 다음처럼 참조를 통해 연관된 객체를 찾을 수 있다
+    Team team = member.getTeam();
+특정 회원이 소속된 팀을 조회하는 가장 객체지향적인 방법 [참조 사용]
+
+
+객체지향 모델링
+    객체는 참조를 통해서 관계를 맺는다
+    객체지향 모델링을 사용하면 객체를 테이블에 저장하거나 조회하기가 쉽지 않다
+    Member 객체는 team 필드로 연관관계를 맺고, MEMBER 테이블은 TEAM_ID 외래 키로 연관관계를 맺기 때문이다
+    객체 모델은 외래 키가 필요 없고 단지 참조만 있으면 된다
+    [테이블은 참조가 필요 없고 외래 키만 있으면 된다]
+개발자가 중간에서 변환 역할을 해야한다
+member.getTeam().getId()
+[
+member.getId(); //MEMBER_ID PK에 저장
+member.getTeam().getId();   //TEAM_ID FK에 저장
+member.getUsername();   //USERNAME 칼럼에 저장
+]
+
+객체를 데이터베이스에 저장하려면 team 필드를 TEAM_ID 외래 키 값으로 변환 해야 하며,
+조회할 때는 TEAM_ID 외래 키 값을 Member 객체의 team 참조로 변환해서 객체에 보관해야 한다
+[
+SELECT M.*, T.*
+    FROM MEMBER M
+    JOIN TEAM T ON M.TEAM_ID - T.TEAM_ID
+]
+
+JPA와 연관관계
+[JPA는 연관관계와 관련된 패러다임 불일치 문제를 해결해준다]
+참조를 외래 키로 변환해서 적절한 INSERT SQL을 데이터베이스에 전달
+객체 조회할 때 외래 키를 참조로 변환하는 일도 한다
+
+객체 그래프 탐색
+객체에서 조회는 참조를 사용해서 연관 관계를 찾는다
+[객체 그래프 탐색]
+
+[SQL을 직접 다루면 처음 실행하는 SQL에 따라 객체 그래프를 어디까지 탐색할 수 있는지 정해진다]
+
