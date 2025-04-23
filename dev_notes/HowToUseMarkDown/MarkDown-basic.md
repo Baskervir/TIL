@@ -68,11 +68,11 @@
 예시로는 `System.out.println("코드");`입니다.
 
 예시
-<pre>```
+```
 public static void main(String[] args) {
-    System.out.println("Hello World");
+System.out.println("Hello World");
 }
-```</pre>
+```
 
 ---
 
