@@ -184,3 +184,69 @@
     > throw문을 사용해서 예외를 다시 발생시킨다
     > 다시 발생한 예외는 이 메서드를 호출한 메서드에게 전달
     > 호출한 메서드의 try-catch문에서 예외를 또다시 처리한다
+```declarative
+class ExceptionEx {
+    public static void main(String[] args) {
+        try {
+            method1();
+        } catch (Exception e) {
+            System.out.println("main메서드에서 예외가 처리되었습니다.");
+        }
+    }
+    
+    static void method1() throws Exception {
+        try {
+            throw enw Exception();
+        } catch (Exception e) {
+            System.out.println("method1메서드에서 예외가 처리되었습니다.");
+            throw e;
+        }
+    }
+}
+```
+### 실행 결과 (순서)
+```declarative
+method1메서드에서 예외가 처리되었습니다.
+main메서드에서 예외가 처리되었습니다.
+```
+
+    반환 값이 있는 return문의 경우, catch블럭에도 return문이 있어야 한다
+    예외가 발생했을 경우에도 값을 반환해야 하기 때문이다
+    
+    catch블럭에서 예외 되던지리를 해서 호출한 메서드로 예외를 전달하면
+    > return문이 없어도 된다
+    > 검증에서도 assert문 대신 AssertError를 생성해서 던진다
+
+    finally블럭 내에도 return문을 사용할 수 있다
+    try블럭이나 catch블럭의 return문 다음에 수행된다
+    최종적으로 finally블랙 내의 return문의 값이 반환된다
+
+---
+
+### 연결된 예외 (chained exception)
+##### 한 예외가 다른 예외를 발생시킬 수도 있다
+`예외 A가 에외 B를 발생시켰다면, A를 B의 ***원인 예외***라고 한다`
+
+```declarative
+try {
+    startInstall();
+    copyFIles();
+} catch (SpaceException e) {
+    InstallException ie = new InstallException("설치중 예외발생");
+    ie.iniCause(e);
+    throw ie;
+} catch (MemoryException me) {
+    ...
+}
+```
+1. InstallException을 생성
+2. initCause()로 SpaceException을 InstallException의 원인 예외로 등록
+3. `throw`로 예외를 던진다
+
+###### 발생한 예외를 처리하지 않고 원인 예외로 등록해서 다시 예외를 발생시키는 이유
+`여러가지 예외를 하나의 큰 분류의 예외로 묶어서 다루기 위해서`
++ InstallException을 SpaceException과 MemoryException의 조상으로 해서 catch블럭을 작성
++ 실제로 발생한 예외가 어떤 것인지 알수 없다
++ SpaceException과 MemoryException의 상속관계를 변경해야 한다
+`그래서 예외가 원인 예외를 포함할 수 있게 한다`
+`cheched 예외를 uncehcked 예외로 바꿀 수 있도록 하기 위함이다`
