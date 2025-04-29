@@ -4,7 +4,7 @@
 2. `Persistence`로부터 `EntityManagerFactory`생성
 3. `EntityManagerFactory`로부터 `EntityManager`생성
 
-#### 엔티티 매니저 팩토리
+## 엔티티 매니저 팩토리
 + JPA를 시작하기 위해 persistence.xml의 설정 정보 사용
 + `엔티티 매니저 팩토리` 생성
 + JPA 사용 준비 완료
@@ -14,7 +14,7 @@ EntityManagerFActory emf = Persistence.createEntityManagerFactory("sample");
 + persistence.xml에서 이름이 **sample**인 영속성 유닛을 찾아 엔티티 매니저 팩토리 생성
 + 엔티티 매니저 팩토리는 애플리케이션 전체에서 딱 한번만 생성한고 공유해서 사용
 
-#### 엔티티 매니저
+## 엔티티 매니저
 ```declarative
 EntityManager em = emf.createEntitiyManager();
 ```
@@ -22,14 +22,14 @@ EntityManager em = emf.createEntitiyManager();
 + JPA의 기능 대부분을 제공한다
 + 엔티티를 데이터베이스에 **등록**/**수정**/**삭제**/**조회**할 숭 ㅣㅆ다
 + 데이터소스(데이터베이스 커넥션)를 유지하면서 데이터베이스와 통신
-+ 스레드간에 공유하거나 재사용 금지
 
-#### 주의
+## 주의
 + 사용이 끝난 엔티티 매니저와 엔티티 매니저 팩토리는 반드시 종료해야 한다
++ 스레드간에 공유하거나 재사용 금지
 
 ---
 
-#### 트랜잭션 관리
+## 트랜잭션 관리
 + JPA를 사용하면 항상 트랜잭션 안에서 데이터를 변경해야 한다
 + 트랜잭션 없이 데이터 변경 시 예외 발생
 + `em`에서 트랜잭션 API를 받아와야 한다
