@@ -54,3 +54,28 @@
 + 주인은 반드시 한 쪽에서 설정 (@JoinTable)
 + 반대편은 `mappedBy`사용
 `실무에서는 항상 "연결 엔티티 승격 + 별도 PK 생성" 패턴을 추천한다`
+
+---
+
+# 연관관계 주인/비주인 매핑 방법
+## 주인 쪽 매핑
++ 연관관계의 주인은 `@JoinColumn` 어노테이션을 사용하여 외래 키를 명시적으로 매핑한다
++ `name`속성을 통해 현재 테이블에 생성될 외래 키 컬럼명을 지정한다
+```declarative
+@ManyToOne  // 연관관계의 주인
+@JoinColumn(name = "target_id") // 현재 테이블에 생성될 FK 이름
+private TargetEntity target;
+```
+
+## 비주인 쪽 매핑
++ 연관관계의 비주인 쪽은 `mappedBy` 속성으 ㄹ사용하여 주인 엔티티의 필드명을 명시한다
++ 외래 키를 직접 관리하지 않고, 단순히 읽기 전용 매핑을 수행한다
+```declarative
+@OneToMany(mappedBy = "target") // 주인 쪽 필드명
+private List<ThisEntity> thisEntities;
+```
+
+## Tips
++ 주인 쪽에 `@JoinColumn`을 꼭 명시!
++ 비주인 쪽은 절대 외래 키를 조작하지 않는다 (조회만)
++ `mappedBy`는 주인의 ***필드명***을 정확히 써야 한다 (클래스명 아님)
