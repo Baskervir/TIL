@@ -37,5 +37,15 @@ Map<String, Integer> map = new Hashtable<>();
 
 ---
 
-## TreeSet
-+ 
+## TreeMap
++ 이진 트리를 기반으로 한 Map 컬렉션이다
++ 키와 값이 저장된 Entry를 저장한다 (TreeSet과의 차이)
++ 엔트리를 저장하면 키를 기준으로 자동 정렬
+  + 부모 키 값과 비교해서 낮은 것은 왼쪽, 높은 것은 오른쪽 자식 노드에 Entry 객체를 저장
+
+### TreeMap 컬렉션 생성
+```declarative
+TreeMap<K, V> treeMap = new TreeMap<K, V>();
+TreeMap<K, V> treeMap = new TreeMap<>();
+```
+
