@@ -3,11 +3,11 @@
 
 @OneToMany(mappedBy = "team")
 private List<Member> member;
-
+```
 @ManyToOne
 @JoinColumn(name = "team_id")
 private Team team;
-
+```
 Member가 Team을 가리키고 있다
 DB 테이블의 외래키 team_id는 Member 테이블에 있다
     > Member가 관계의 주인이다
