@@ -28,3 +28,14 @@ Map<String, Integer> map = new Hashtable<String, Integer>();
 Map<String, Integer> map = new Hashtable<>();
 ```
 
+---
+
+## Properties
++ Hashtable의 자식 클래스 / Hashtable의 특징을 그대로 가지고 있다
++ 키와 값을 String 타입으로 제한한 컬렉션
++ 확장자가 `.properties`인 프로퍼티 파일을 읽을 때 사용한다
+
+---
+
+## TreeSet
++ 
