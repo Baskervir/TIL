@@ -79,3 +79,35 @@
 + 필드 매핑 X
 + 데이터베이스에 저장 X, 조회 X
 + 주로 메모리 상에서만 임시로 값을 보관하고 싶을 때 사용
+
+---
+
+### @TableGenerator - 속성
+| 속성              | 설명 | 기본값 |
+|-----------------| --- | --- |
+| name            | 식별자 생성기 이름 | 필수 |
+| table           | 키생성 테이블명 | hibernate_sequences |
+| pkColumnName    | 시퀀스 컬럼명 | sequence_name |
+| valueColumnName | 시퀀스 값 컬럼명 | next_val |
+| pkColumnValue | 키로 사용할 값 이름 | 엔티티 이름 |
+| initialValue | 초기 값, 마지막으로 생성된 값이 기준이다 | 0 |
+| allocationSize | 시퀀스 한 번 호출에 증가하는 수 <br>(성능 촤적화에 사용된다) | 50 |
+| catalog, schema | 데이터베이스 catalog, schema 이름 | |
+| uniqueConstraints(DDL) | 유니크 제약 조건을 지정할 수 있다 | | 
+
+---
+
+### IDENTITY 전략 - 특징
++ 기본 키 생성을 데이터베이스에 위임
++ JPA는 트랜잭션 커밋 시점에 INSERT SQL 실행
++ AUTO_INCREMENT는 데이터베이스에 INSERT SQL을 실행 한 이후에 ID값을 알 수 있다
++ IDENTITY 전략은 em.persist() 시점에 즉시 INSERT SQL을 실행하고 데이터베이스에서 식별자를 조회한다
+
+---
+
+### 권장하는 식별자 전략
++ 기본 키 제약 조건 : null 아님, 유일, 변하면 안된다
++ 미래까지 이 조건을 만족하는 자연키는 찾기 어렵다
++ 대리키(대체키)를 사용하자
++ `권장`: Long형 + 대체키 + 키 생성전략 사용
+
