@@ -174,5 +174,4 @@ Response
 | code | Authorization Code Grant 방식에서 Access Token요청 시<br>사용된다<br>권한 서버에서 획득한 Authorization Code를 입력 | |
 | token_type | 발행된 Token의 타입<br>Bearer, MAC(Message Authorization Code) | |
 | expires_in | 토큰 만료 시간 (단위: 초) | |
-| example_parameter | Token 타입에 따른 추가 파라미터 | |
-g
+| example_parameter | Token 타입에 따른 추가 파라미터 | |g
