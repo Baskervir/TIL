@@ -50,7 +50,7 @@
 + Refresh Token 사용 가능 방식
 + 주로 타사의 클라이언트에게 보호된 자원을 제공하기 위한 인증에 사용
 
-![img.png](Authorization_Code.png)
+![img.png](img/Authorization_Code.png)
 + 권한 부여 승인 요청 시 `response_type=code`로 지정하여 요청
 + 클라이언트는 권한 서버에서 제공하는 로그인 페이지를 브라우저에 띄워 출력
 + 사용자 로그인 시
@@ -89,7 +89,7 @@ Response
 + `Access Token`을 획득하기 위한 절차가 간소화된다
   + 응답성과 효율성은 높아지지만, `Access Token`이 URL로 전달된다 //`토큰 탈취 위험 증가`
 
-![img.png](Implicit.png)
+![img.png](img/Implicit.png)
 + 권한 부여 승인 요청 시 `reponse_type`을 `token`으로 설정하여 요청
   + 클라이언트는 권한 서버에서 제공하는 로그인 페이지를 브라우저에 출력
   + 로그인이 완료되면
@@ -108,7 +108,7 @@ Response http://example.com/cb#access_token=2YotnFZFEjr1zCsicMWpAA&state=xyz&tok
 + 클라이언트가 타사의 외부 프로그램일 경우 이 방식 적용 금지!
   + 자신의 서비스에서 제공하는 애플리케이션일 경우에만 사용되는 인증 방식 `Refresh Token`사용 가능
 
-![img.png](Resource_Owner_Password_Credentials.png)
+![img.png](img/Resource_Owner_Password_Credentials.png)
 + 제공하는 API를 통해 username, password를 전달하여 Access Token을 받는다
 + 권한 서버, 리소스 서버, 클라이언트가 모두 같은 시스템에 속해 있을 때 사용되어여 한다!
 
@@ -136,7 +136,7 @@ Response
 + OAuth의 권한 부여 방식 중 가장 간단한 방식
 + 클라이언트 자신이 관리하는 리소스 혹은 권한 서버에 해당 클라이언트를 위한 제한된 리소스 접근 권한이 설정되어 있는 경우 사용
 
-![img.png](Client_Credentials.png)
+![img.png](img/Client_Credentials.png)
 + 백엔드 서비스 간 두 통신
   + 두 서비스가 사용자의 개입 없이 서로 통신할 필요가 있을 때 사용
 + 제한된 리소스에 대한 엑세스
