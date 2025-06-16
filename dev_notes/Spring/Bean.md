@@ -207,3 +207,72 @@ Spring Container가 해당 객체(클래스의 인스턴스)를
 | `@Bean` | 수동 등록 | 테스트, 명시적 설정 |
 | `@ComponentScan` + 어노테이션 | 자동 등록 | 일반 서비스 로직 |
 | `@Import` | 설정 병합 | 복잡한 설정 구조 |
+
+---
+
+## 인젝션
++ @Bean 메서드로 Bean을 정의할 때 인젝션하는 부분도 @Bean 메서드 안에 작성 가능
+  + Bean으로 관리하고 싶은 구상 클래스가 의존 객체를 인젝션하기 위한 생성자를 정의한 경우
+    + 생성자 호출할 때 의존 객체를 전달할 수 있다
+
+```java
+import java.beans.BeanProperty;
+
+@Bean
+public TrainingService trainingService(
+        TrainingReposiroty trainingReposiroty) {
+    TrainingServiceImpl trainingService = new TrainingServiceImpl(trainingReposiroty);
+    return trainingServiceImpl;
+}
+
+@Bean
+public TrainingRepository trainingRepository() {
+    return new JdbcTrainingRepository();
+}
+```
++ TrainingServiceImpl 객체와 JdbcTrainingRepository 객체를 Bean으로 정의하는 @Bean 메서드가 각각 정의되어 있다
++ TrainingServiceImpl 객체에는 의존 객체로 TrainingRepository 객체를 인젝션
++ trainingRepository 메서드에서는 JdbcTrainingRepository 객체를 Bean으로 정의
+  + JdbcTrainingRepository 객체가 DI 컨테이너에서 관리된다
++ trainingService 메서드에서는 TrainingServiceImpl 객체를 Bean으로 정의
+  + trainingService 메서드의 인수로는 TrainingRepository 타입 인수 지정
+  + @Bean 메서드의 인수로 TrainingRepository 타입의 인수 지정해두면
+    + DI 컨테이너가 이 @Bean 메서드를 호출할 때 컨테이너 내에서 TrainingRepository 객체를 찾아 인수로 넘겨준다
+    + 이 경우 JdbcTrainingRepository 객체가 전달된다
++ trainingService 메서드에서는 TrainingServiceImpl 클래스의 생성자를 호출해 객체를 생성
+  + 생성자의 인자로 TrainingRepository 객체를 전달한다
+  + TrainingServiceImpl 객체를 반환값으로 돌려준다
++ TrainingServiceImpl 객체에 JdbcTrainingRepository 객체가 인젝션 된다
+
+---
+
+## 라이브러리의 클래스를 Bean으로 정의하기
++ @Bean 메서드이 용도는 라이브러리가 제공하는 클래스의 Bean 정의다
+
+---
+
+## Bean으로 등록한다?
+스프링 컨테이너가 해당 객체의 생성, 관리, 주입을 책임진다는 뜻
+
+**빈(Bean)이란?** = 스프링 컨테이너에 의해 관리되는 객체
+스프링이 생성하고, 생명주기를 관리하고, 필요할 때 꺼내쓸 수 있게 해주는 객체
+
+## 왜 빈으로 등록해야 하나?
+1. 의존성 주입을 위해
++ 어떤 객체 A가 B를 필요로 하면, 직접 `new B()`해서 만드는게 아니라, 스프링이 만들어 둔 B를 주입받는 방식으로 설계
++ 이게 가능하기 위해서는 스프링이 B객체를 먼저 만들어서 보관하고 있어야 한다
+  + 빈으로 등록되어 있어야 한다
+2. 재사용성과 효율성 확보
++ 객체를 매번 새로 만들지 않고, 필요한 시점에 스프링이 꺼내준다
++ 대부분 싱글통 범위로 관리되므로 성능에도 이점
+3. 관심사의 분리
++ 객체를 생성하는 책임과 사용하는 책임을 분리
++ 개발자는 비즈니스 로직에 집중하고, 스프링이 객체 생성과 주입은 알아서 처리
+4. 테스트와 확장에 유리
++ 빈으로 등록해두면 테스트 시 다른 구현체로 쉽게 교체 가능
++ DI 컨테이너에 의해 유연하게 모듈 대체 가능
+
+## 정리
++ 빈 등록의 의미 : 스프링이 객체를 관리하도록 등록하는 것
++ 왜 필요한가? : DI를 위해, 재사용성, 유지보수, 테스트 유리
++ 언제 하는가? : 객체가 다른 객체에 주입되거나, 설정이 필요할 때
