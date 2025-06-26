@@ -40,3 +40,104 @@
 
 ---
 
+## 스프링의 테스트 지원 기능
++ DI 컨테이너 자동 생성
+  + JUnit 테스트를 수행하면 자동으로 DI 컨테이너가 생성된가
++ 테스트 클래스에 임의의 Bean 인젝션
+  + 테스트 대상 메서드를 가진 Bean을 인젝션하여 테스트 메서드 안에서 호출할 수 있다
++ 지정한 SQL 파일을 테스트 시 불러와 실행
+  + 임의의 SQL 파일에 SQL을 작성하고 테스트 시 자동으로 불러와 실행할 수 있다
++ 데이터베이스 자동 롤백
+  + 테스트 메서드가 종료되는 타이밍에 데이터베이스 트랜잭션의 롤백을 자동으로 수행
+  + 테스트로 갱신된 데이터를 테스트 전 상태로 되돌려 다음 테스트에 영향을 주지 않는다
+
+---
+
+## DI 컨테이너를 생성하기 위한 어노테이션
++ @SpringBootTest
+  + 일반 DI 컨테이너와 기본적으로 동일하게 동작하는 DI 컨테이너를 생성
+  + E2E 테스트 및 통합 테스트에 사용
++ @WebMvcTest
+  + 웹 관련 설정만 하도록 자동 설정이나 컴포넌트 스캔을 제한한 DI 컨테이너를 생성
+  + Controller 단위 테스트를 수행할 때 사용
++ @JdbcTest, @DataJpaTest, @MybatisTest 등
+  + 데이터베이스 접근 관련 설정만 하도록 자동 설정 및 컴포넌트 스캔을 제한한 DI 컨테이너를 생성
+  + 데이터베이스 접근 방식(JDBC, JPA, MyBatis 등)마다 별도의 어노테이션 존재
+  + Repository 단위 테스트를 수행할 때 사용
+
+## 테스트 클래스
+```java
+@SpringBootTest    //DI 컨테이너를 생성하기 위한 어노테이션
+class SampleTest {
+    @Autowired
+    SomeBean someBean;    //테스트 대상인 SomeBean 객체를 주입
+  
+    @Test
+    void test() {
+        someBean.A();    //인젝션한 객체의 메서드를 호출하여 테스트 수행
+      ...
+    }
+}
+
+//구체적 명시 및 접근 제한자를 제외한 단순화된 외형
+```
+
+### JavaConfig 클래스를 자동으로 찾게 하기
++ 자동으로 찾아주기를 원하는 JavaConfig 클래스에 @SpringBootConfiguration을 붙여야 한다
+  + main 메서드를 가진 클래스에 붙이던 @SpringBootApplication에 포함되어 있다
+  + @SpringBootConfiguration은 @Configuration을 포함 > JavaConfig 클래스로 인식
+
+#### @SpringBootConfiguration이 붙은 JavaConfig 클래스를 찾는 순서
+1. 테스트 클래스와 동일한 패키지 안에서 찾는다
+2. 찾지 못하면 그 상위 패키지에서 찾는다
+3. 그래도 찾지 못하면 더 상위 패키지를 찾는다
+
+```java
+@SpringBootApplication
+public class TrainingApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TrainingApplication.class, args);
+    }
+}
+```
++ main 메서드를 가진 클래스에 @SpringBootApplication을 붙이고
+  + main 메서드 안에 자신으ㅢ 클래스를 지정하여 DI 컨테이너를 생성
++ `@SpringBootApplication` 안에는
+  + 자동 구성을 활성화 하는 `@EnableAutoConfiguration`
+  + 컴포넌트 스캔을 지시하는 `@ComponentScan`
+  + `@SpringBootConfiguration`이 포함되어 있다
++ main 메서드를 가진 클래스를 스프링에 불러오기 위해서는 테스트 클래스를 main 클래스가 포함된 패키지보다 하위 패키지에 배치해야 한다
+
+### 테스트를 실행할 때만 불러오는 application.properties
++ 자동 테스트를 실행할 때만 스프링 설정을 변경하고 싶은 경우에 사용
+  + 예를 들어 테스트를 실행할 때만 상세 로그를 출력하도록 로그 레벨 조정
++ `src/main/resources`아래의 `application.properties`에 설정 작성 > 테스트 & main 메서드로 app 실행 시 설정 반영
++ main 메서드로 실행했을 때 설정 반영하지 않도록 하기
+  + `application.properties`를 `src/test/resources`에 배치
+    + 테스트 클래스가 실행될 때만 로드
+  + 테스트 클래스를 실행 : `src/test/resoutces`아래의 `application.properties`
+  + `src/main/java`아래 main 메서드 실행 : `src/main/resources`아래의 `application.properties`
+
+### src/main/resources 아래의 application..properties파일에 테스트 클래스 적용 부분 존재 시
++ `src/test/resources`아래에 `application.properties`가 아닌 `application-default.properties`를 배치
+```declarative
+src/main/java
+         ㄴ com.example.training
+                  ㄴ TrainingApplication.java(main 메서드를 가진다)
+                  ㄴ ... ...
+src/main/resources
+         ㄴ application.properties    //TrainingApplication 실행 & 테스트 실행 공통되는 설정 작성
+src/test/java
+         ㄴ com.example.training
+                  ㄴ service
+                        ㄴ ReservationServiceTest.java
+                  ㄴ ... ...
+src/test/resources
+         ㄴ application-default.properties    //(프로파일을 지정하지 않고)테스트를 실행했을 때만 활성회될 설정을 작성
+```
++ 하이픈 뒤의 default는 프로파일 이름을 나타낸다
++ DI 컨테이너 생성 시 활성화할 프로파일을 지정하지 않으면 자동으로 default 프로파일이 활성화
+  + application-default.properties 파일이 로드
++ application-default.properties를 src/test/resources 아래에 패지
+  + 테스트 클래스를 실행할 때만 application-default.properties 가 로드
+    + 프로파일을 지정하지 않았다고 가정 > 프로파일 이름이 없으므로 항상 로드된다
