@@ -106,5 +106,8 @@ void test_selectById() {
 + 클래스 패스에 있는 동일한 패키지에서 로드
 ```declarative
 INSERT INTO training
-(id, title, start_date_time, end_date_time)
+(id, title, start_date_time, end_date_time, reserved, capacity) VALUES
+...
 ```
+0
+0
