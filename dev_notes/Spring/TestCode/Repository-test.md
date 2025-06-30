@@ -109,3 +109,4 @@ INSERT INTO training
 (id, title, start_date_time, end_date_time, reserved, capacity) VALUES
 ...
 ```
+
