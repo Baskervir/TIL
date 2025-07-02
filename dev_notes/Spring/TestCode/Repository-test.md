@@ -101,11 +101,82 @@ void test_selectById() {
 ```declarative
 INSERT INTO training
 (id, title, start_date_time, end_date_time, reserved, capacity) VALUES
+('t01', '비즈니스 예절 교육', '2023-08-01 09:30', '2023-08-03 17:00', 1, 10),
+('t02', '자바 교육', '2023-09-01 09:30', '2023-08-03 17:00', 1, 5),
+('t03', '마케팅 교육', '2023-10-01 09:30', '2023-10-03 17:00', 5, 5);
+```
++ 이미 데이터가 등록되어 있다는 전제하에 테스트 메서드 작성 가능
+
+```java
+@Test
+@Sql({"JdbcTrainingRepositoryTest_1.sql", "JdbcTrainingRepositoryTest_2.sql"})
+void test_selectById() {
+  ...
+}
+```
++ `@Sql`어노테이션으로 SQL 파일 여러 개를 지정할 수 있다
+  + 지정된 순서대로 SQL 파일에 기재된 SQL이 실행된다
+  + 메서드뿐만 아니라 클래스에도 적용할 수 있다
+    + 클래스에 적용한 경우, 테스트 클래스에 속한 모든 테스트 메서드에서 지정된 SQL 파일이 실행
+
+---
+
+## 데이터 정리
++ 테스트 메서드가 실행되면 해당 테스트 메서드에 필요한 데이터가 등록된다
+  + 다음 테스트 메서드를 실행할 때 필요한 데이터를 다시 등록하기 위해선 기존 데이터를 정리 해야 한다
++ `@JdbcTest`를 사용하면 자동으로 트랜잭션이 시작 > 테스트 메서드 종료시 자동으로 롤백
+  + 트랜잭션을 시작하는 시점은 @Sql에서 지정한 SQL 파일을 실행하기 전
+    + @Sql에서 등록한 데이터 롤백
++ @Transactional은 @JdbcTest에 포함된 기능
+
+### 정리
++ 위의 테스트는 Repository 클래스의 메서드를 호출하여 예상대로 데이터를 가져올 수 있는지 확인하는 참조 계열 테스트
+
+## 갱신 개열 처리 테스트
++ Repository 클래스의 메서드를 호출하여 예상대로 데이터가 업데이트되었는지를 테스트 한다
+
+```text
+     +----------테스트 데이터 등록-------------------------->+
+:테스트 클래스 -------------> :Repository -------------> 데이터페이스
+     +           ㄴ처리 호출                 ㄴ데이터베이스가 갱신된다.
+     +----------데이터 확인-------------------------------->+
+```
++ 테스트 데이터를 등록하고 Repository 객체 처리를 호출하는 부분까지는 참조 계열 테스트와 동일
++ 이번에는 Repository 객체의 처리 과정에서 업데이트 처리 발생
+  + 데이터베이스의 데이터 갱신 (업데이트는 등록, 변경, 삭제 포함)
++ Repository 객체의 처리가 끝나면 테스트 클래스에서 데이터베이스의 내용을 확인
+
+---
+
+## JdbcTemplate으로 데이터 확인하기
++ 테스트 클래스에 JdbcTemplate 객체를 인젝션
+  + 임의의 SQL로 데이터를 가져와 예상대로 데이터가 나오는지 확인
+```java
+...
+@Autowired
+JdbcTemplate jdbcTemplate;  //JdbcTemplate 객체를 인젝션
+...
+
+@Test
+void test_update() {
+    Training training = new Training();
+    training.setId("t01");
+    training.setTitle("SQL 입문");
+  ...
+    //강의 데이터를 업데이트하는 메서드를 호출 > training 테이블의 데이터 갱신
+    boolean result = trainingRepository.update(training);
+    assertThat(result).isEqualTo(true);
+    //JdbcTemplate 객체를 사용하여 갱신된 레코드를 SELECT 문으로 가져온다
+    Map<String, Object> trainingMap = jdbcTemplate.queryForMap(
+            "SELECT * FROM training WHERE id=?", "t01");
+    //가져온 레코드의 컬럼 값을 어선셜
+    assertThat(trainingMap.get("title")).isEqualTo("SQL 입문");
+  ...
+}
 ...
 ```
 
 ---
-
 ### 기본 CRUD 동작 확인
 ```java
 @Test
