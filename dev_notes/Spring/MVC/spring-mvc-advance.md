@@ -13,4 +13,144 @@ public String displayList(@RequestParam("pageNo") int pNo, @RequestParam("maxCou
     ...
 }
 ```
-+
++ 인수가 두 개 선언되어 있으며, 각각 @RequestParam이 붙어있다
+  + @RequestParam은 요청 파라미터의 값을 가져오기 위한 어노테이션
++ ( ) 안에 파라미터명을 지정하면 인수의 변수에 파라미터의 값이 전달된다
++ 위 의 경우 pNo = 1, max = 10 이 전달된다
++ 인수명과 파라미터명을 일치시키면 @RequestParam의 ( ) 생략 가능
+
+### 요청 파라미터의 기본값
+```java
+@XxxMapping("/display-list")
+public String displayList(
+        @RequestParam(defaultValue = "1") int pageNo,
+        @RequestParam(defaultValue = "10") int maxCount) {
+  ...
+}
+```
++ @RequestParam의 defaultValue 속성에서 임의의 기본값 지정 가능
++ 임의의 클래스를 생성하고 프로퍼티명을 요청 파라미터명에 맞춘다
+  + getXxx(Getter 메서드)로 취득하거나 setXxx(Setter 메서드)로 갱신할 수 있는 데이터를 프로퍼티라고 부른다
+  + xxx(첫 글자는 소문자)는 프로퍼티 이름이 된다
+
+### 요청 파라미터 값을 저장하는 클래스
+```java
+public class PageInput {
+    private Integer pageNo;
+    private Integer maxCount;
+  ... //Getter, Setter 메서드
+}
+```
++ 위 클래스의 타입을 핸들러 메서드의 인수로 정의한다
+
+### 값을 저장하는 클래스를 인수로 정의한 핸들러 메서드
+```java
+@XxxMapping("/display-list")
+public String displayList(PageInput pageInput) {
+  ...
+}
+```
++ 요청 파라미터가 전송되면 핸들러 메서드가 호출되기 전에 PageInput 클래스의 객체가 자동으로 생성
+  + 파라미터의 값이 프로퍼티에 설정된다
++ 파라미터 값이 프로퍼티에 설정된 PageInput 객체가 displayList 메서드의 인수로 전달된다
+
+---
+
+## View에 데이터 전달하기
++ View 객체에 데이터를 전달하기 위해서는 Model 객체 안에 데이터를 저장해야 한다
+### Model에 데이터를 저장
+```java
+@GetMapping("/display-details")
+public String displayDetails(@RequestParam String trainingId, Model model) {
+    Training training = trainingService.findById(trainingId);
+    model.addAttribute("training", training);
+    return "training/trainingDetails";
+}
+```
++ 핸들러 메서드에 Model의 인자를 지정 -> 스프링 MVC가 Model 객체를 인자로 전달
++ 인젝션된 Service 객체(trainingService)에 대해 ID 지정 검색 처리를 호출 -> 얻은 Entity 객체를 Model 객체 내에 저장
+  + 저장할 때는 Model 객체가 가진 addAttribute 메서드 사용
+
+### 속성명 지정을 생략한다?
+```java
+@GetMapping("/display-details")
+public String displayDetails(@RequestParam String trainingId, Model model) {
+    Training training = trainingService.findById(trainingId);
+    model.addAttribute(training);       //속성명 지정을 생략
+    return "training/trainingDetails";
+}
+```
+
+---
+
+## Thymeleaf로 데이터 참조하기
++ Thymeleaf 템플릿 파일에서 Model 객체의 데이터를 참조할 수 있다
++ 예시
+```text
+Model 객체 안의 Training 객체
+------------------------------------
+|       :Model                      |
+|             -----------------------
+|             |     :Training       |
+| 속성명       |       title         |
+| "training"  |       startDateTime |
+|             |       reserved      |
+-------------------------------------
+```
++ Training 객체가 title, startDateTime, reserved 프로퍼티를 가지고 있다
+
++ Model 객체의 데이터를 참조?
+```html
+<table>
+  <tr>
+    <th>강의명</th>
+    <td><span th:text="${training.title}"></span></td>
+  </tr>
+  <tr>
+    <th>시작일자</th>
+    <td><span th:text="${#temporals.format(training.startDateTime, 'yyyy/MM/dd HH:mm')}"></span></td>
+  </tr>
+  <tr>
+    <th>신청인원</th>
+    <td><span th:text="${training.reserved}"></span></td>
+  </tr>
+</table>
+```
++ Model 객체의 데이터를 참조할 때는 `${ }`안에서 Model 객체의 데이터 속성명을 지정
+  + 예시에서는 `training`이므로 `${training}`이라고 작성
++ `#temporals.format`
+  + `#`: Thymeleaf가 가진 범용 객체에 접근하기 위한 기호
+  + `temporals`: 날짜 및 시간 데이터를 편리하게 다룰 수 있는 객체
+
+---
+
+## List 객체 참조하기
++ List 객체를 View 객체로 전달하여 표시
++ List 객체를 Model 객체에 저장한다?
+```java
+@GetMapping("/display-list")
+public String displayList(Model model) {
+    List<Training> trainings = trainingService.findAll();
+    model.addAttribute("trainingList", trainings);
+    return "training/trainingList";
+}
+```
++ addAttribute 메서드를 사용해 데이터를 저장
+
+---
+
+## Bean Validation을 이용한 입력 검사
++ 자바 표준 기술
++ 스프링 MVC는 Bean Validation과 원활하게 연동 가능
+
+| 어노테이션 | 용도 |
+| --- | --- |
+| `@NotNull` | 값이 null이 아닌지 확인 |
+| `@NotBlank` | 문자열이 null, 빈 문자(""), 공백 문자(" ")가 아닌지 확인 |
+| `@NotEmpty` | null, "" 체크 & " " 허용<br>List나 Map이 null이거나 크기가 0이 아닌지 확인 |
+| `@Max` | 지정 값 이하의 수치인지 확인 |
+| `@Min` | 지정 값 이상의 수치인지 확인 |
+| `@Size` | 문자열 길이나 List, Map의 요소 수가 최소 및 최대 범위인지 확인<br>`@Size(min=5, max=10)`은 5이상이고 10이하인지 확인 |
+| `@Email` | 이메일 주소 형식 확인 |
+| `@Pattern` | 지정한 정규 표현에 맞는지 확인 |
+| `@AssertTrue` | Boolean 타입인 필드 혹은 메서드의 반환 값이 True인지 확인 |
