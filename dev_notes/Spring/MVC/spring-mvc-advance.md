@@ -154,3 +154,104 @@ public String displayList(Model model) {
 | `@Email` | 이메일 주소 형식 확인 |
 | `@Pattern` | 지정한 정규 표현에 맞는지 확인 |
 | `@AssertTrue` | Boolean 타입인 필드 혹은 메서드의 반환 값이 True인지 확인 |
+
+---
+
+## 요청 파라미터를 사용한 핸들러 메서드 호출
++ `<form>` 태그에 요청을 보낼 때 `action` 속성에 보낼 경로 하나 지정
+  + 이 때, 처리할 작업이 여러 개인 경우 존재
+
+### <form> 태그와 조작
+```html
+<form th:action="@{reservation/reserve}" method="post">
+  ...
+  <input type="submit" value="신청 내용 확정"/>
+  <input type="submit" value="신청 내용 변경"/>
+</form>
+```
++ 동일한 경로(reservation/reserve)로 동일한 HTTP 메서드(POST) 요청이 전송된다
+  + 핸들러 메서드를 나눌 수 없다
++ 요청 파라미터를 할당하여 문제를 해결한다
+#### 요청 파라미터 할당
+```html
+<form th:action="@{reservation/reserve}" method="post">
+  ...
+  <input name="reserve" type="submit" value="신청 내용 확정"/>
+  <input name="correct" type="submit" value="신청 내용 변경"/>
+</form>
+```
++ '신청 내용 확정'에는 reserve, '신청 내용 변경'에는 correct 파라미터명 할당
+  + 핸들러 메서드를 나눌 수 있게 된다
+#### 요청 파라미터로 나눈 핸들러 메서드
+```java
+@PostMapping(value = "/reserve", params = "correct")     //params 속성 지정
+public String correctInput(@Validated ReservationInput reservationInput, Model model) {
+    List<StudentType> studentTypeList = reservationService.findAllStudentType();
+    model.addAttribute("studentTypeList", studentTypeList);
+    return "reservation/reservationForm";
+}
+
+@PostMapping(value = "/reserve", params = "reserve")     //params 속성 지정
+public String reserve(@Validated ReservationInput reservationInput, Model model) {
+    Reservation reservation = reservationService.reserve(reservationInput);
+    model.addAttribute("reservation", reservation);
+    return "reservation/reservationCompletion";
+}
+```
++ `param 속성 지정` -> 요청과 핸들러 메서들르 연결하는 조건
+  + `@PostMapping(value = "/reserve", params = "correct")`의 경우
+    + 요청: POST | 경로: /reserve | 요청 파라미터명: correct(임의의 값)
+
+---
+
+## 예외 핸들링
++ 핸들러 메서드에서 따로 예외를 잡아주지 않으면 -> 호출자(스프링 MVC 내부 프로그램)로 예외가 전파된다
+  + 사용자에게 표기하기에 부적절 -> 예외 처리 필요
+
+### 예외를 처리하는 방법
+1. `@ExceptionHandler`: 컨트롤러 내 or 전역
+```java
+@RestController
+public class Mycontroller {
+    
+    @GetMapping("/place")
+    public Place find() {
+        throw new PlaceNotFoundException("해당 장소 없음");
+    }
+    
+    @ExceptionHandler(PlaceNotFoundException.class)
+    public ResponseEntity<String> handlePlaceNotFound(PlaceNotFoundException e) {
+        return ReponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+}
+```
++ 장점: 해당 컨트롤러 범위 내에서 세밀하게 예외 처리 가능
++ 단점: 모든 컨트롤러마다 중복될 수 있다
+
+2. `@ControllerAdvice` + `@ExceptionHandler`: 전역 예외 처리
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(PlaceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePlaceNotFound(PlaceNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("PLACE_NOT_FOUND", e.getMessage()));
+    }
+    
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleDefault(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("INTERNAL_ERROR", "알 수 없는 오류 발생"));
+    }
+}
+```
++ 장점: 예외를 한 곳에서 일괄적으로 처리 가능
++ 단점: 일부 특정 컨트롤러에서 다른 응답 형식을 요구할 경우 충돌 가능
+
+3. `ResponseStatusException`사용
+```java
+@GetMapping("/place")
+public Place find() {
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "장소를 찾을 수 없습니다.");
+}
+```
++ 장점: 간단, 별도 핸들러 없이 HTTP 상태 코드 응답 가능
++ 단점: 구조화된 에러 응답을 제공하기 어렵다
