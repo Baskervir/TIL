@@ -146,4 +146,22 @@ public class TrainingAdminRestController {
 }
 ```
 + GET 요청을 받는 햔들러 메서드가 두 개 있지만 모두 @ResponseBody가 붙어있지 않다
-+ 클래스에 @RestController 붙어있다 -> @ResponseBody 생략 가능
++ Controller 클래스에 @RestController 붙어있다 -> @ResponseBody 생략 가능
+#### @RestController를 붙인 클래스
+```java
+@RestController
+public class TrainingAdminREstController {
+  ...
+  @GetMapping("/api/trainings")
+  public List<Training> getTraingings() {
+      return trainingAdminService.findAll();
+  }
+  
+  @GetMapping("/api/trainings/{id}")
+  public Training getTraining(@PathVariable String id) {
+      return trainingAdminService.findById(id);
+  }
+  
+  ...
+}
+```
