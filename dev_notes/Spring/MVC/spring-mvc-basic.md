@@ -56,17 +56,17 @@
 
 ## 핸들러 메서드와 @XxxMapping
 + 핸들러 메서드(컨트롤러 메서드)는 요청과 연결된 Controller 클래스의 메서드
-+ 핸들러 메서드를 만들기 위해서는 먼저 Controller 클래스 안에 적절한 메서드를 만든다 > `@XxxMapping`형태의 어노테이션을 붙인다
++ 핸들러 메서드를 만들기 위해서는 먼저 Controller 클래스 안에 적절한 메서드를 만든다 > `@XxxMapping`형태의 애너테이션을 붙인다
 
 ### @XxxMapping의 형태 및 종류
-| 어노테이션 | 설명 |
-| --- | --- |
-| `@RequestMapping` | 가장 기본적인 매핑 어노테이션<br>모든 HTTP 메서드 지원(GET, POST 등) |
-| `@GetMapping` | `@RequestMapping(method = RequestMethod.GET)` |
-| `@PostMapping` | `@RequestMapping(method = RequestMethod.POST)` |
-| `@PutMapping` | `@RequestMapping(method = RequestMethod.PUT` |
-| `@DeleteMapping` | `@RequestMapping(method = RequestMethod.DELETE)` |
-| `@PatchMapping` | `@RequestMapping(method = RequestMethod.PATCH)` |
+| 애너테이션             | 설명                                               |
+|-------------------|--------------------------------------------------|
+| `@RequestMapping` | 가장 기본적인 매핑 애너테이션<br>모든 HTTP 메서드 지원(GET, POST 등)  |
+| `@GetMapping`     | `@RequestMapping(method = RequestMethod.GET)`    |
+| `@PostMapping`    | `@RequestMapping(method = RequestMethod.POST)`   |
+| `@PutMapping`     | `@RequestMapping(method = RequestMethod.PUT`     |
+| `@DeleteMapping`  | `@RequestMapping(method = RequestMethod.DELETE)` |
+| `@PatchMapping`   | `@RequestMapping(method = RequestMethod.PATCH)`  |
 
 #### 사용 예시
 ```java
@@ -109,15 +109,15 @@ public class UserController {
 
 ---
 
-### `@XxxMapping`과 함께 자주 사용하는 어노테이션 정리
-| 어노테이션 | 용도 및 설명 |
-| --- | --- |
-| `@PathVariable` | URL 경로에 포함된 값을 변수로 바인딩할 때 사용 |
-| `@RequestParam` | 쿼리 파라미터 또는 HTML form 파라미터 값을 가져올 때 사용 |
-| `@RequestBody` | HTTP 요청 본문(JSON, XML 등)을 객체로 매핑할 때 사용 |
-| `@RequestBody` | 메서드의 반환값을 HTTP 응답의 Body로 직렬화<br>`@RestController` 쓰면 생략 |
-| `@RequestHeader` | HTTP 요청 헤더 값을 가져올 때 사용 |
-| `@CookieValue` | 쿠키 값을 가져올 때 사용 |
-| `@ModelAttribute` | 폼 데이터 or 쿼리 파라미터를 객체에 바인딩<br>주로 HTML form 처리용 |
-| `@RequestPart` | multipart 요청에서 특정 part를 가져올 때 사용 |
+### `@XxxMapping`과 함께 자주 사용하는 애너테이션 정리
+| 애너테이션                 | 용도 및 설명 |
+|-----------------------| --- |
+| `@PathVariable`       | URL 경로에 포함된 값을 변수로 바인딩할 때 사용 |
+| `@RequestParam`       | 쿼리 파라미터 또는 HTML form 파라미터 값을 가져올 때 사용 |
+| `@RequestBody`        | HTTP 요청 본문(JSON, XML 등)을 객체로 매핑할 때 사용 |
+| `@RequestBody`        | 메서드의 반환값을 HTTP 응답의 Body로 직렬화<br>`@RestController` 쓰면 생략 |
+| `@RequestHeader`      | HTTP 요청 헤더 값을 가져올 때 사용 |
+| `@CookieValue`        | 쿠키 값을 가져올 때 사용 |
+| `@ModelAttribute`     | 폼 데이터 or 쿼리 파라미터를 객체에 바인딩<br>주로 HTML form 처리용 |
+| `@RequestPart`        | multipart 요청에서 특정 part를 가져올 때 사용 |
 | `@VAlid`, `Validated` | 입력값 유효성 검증을 위해 DTO에 붙인다 |

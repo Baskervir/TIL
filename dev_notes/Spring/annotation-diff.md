@@ -1,4 +1,4 @@
-# 어노테이션 차이점 정리
+# 애너테이션 차이점 정리
 
 ## `@RestController` vs `@Controller`
 | 항목 | `@Controller` | `@RestController` |

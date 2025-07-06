@@ -30,7 +30,7 @@
 ## Mockito를 사용한 Service 단위 테스트
 ```java
 //JUnit에서 제공하는 @ExtendWith 를 사용 > 지정된 클래스의 처리를 호출해준다
-//@InjectMocks / @Mock 과 같은 Mockito가 제공하는 어노테이션을 탐지 > 어노테이션에 따른 처리 수행
+//@InjectMocks / @Mock 과 같은 Mockito가 제공하는 애너테이션을 탐지 > 애너테이션에 따른 처리 수행
 @ExtendWith(MockitoExtension.class)
 class TrainingAdminServiceImplTest {
     

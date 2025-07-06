@@ -14,7 +14,7 @@ public String displayList(@RequestParam("pageNo") int pNo, @RequestParam("maxCou
 }
 ```
 + 인수가 두 개 선언되어 있으며, 각각 @RequestParam이 붙어있다
-  + @RequestParam은 요청 파라미터의 값을 가져오기 위한 어노테이션
+  + @RequestParam은 요청 파라미터의 값을 가져오기 위한 애너테이션
 + ( ) 안에 파라미터명을 지정하면 인수의 변수에 파라미터의 값이 전달된다
 + 위 의 경우 pNo = 1, max = 10 이 전달된다
 + 인수명과 파라미터명을 일치시키면 @RequestParam의 ( ) 생략 가능
@@ -143,16 +143,16 @@ public String displayList(Model model) {
 + 자바 표준 기술
 + 스프링 MVC는 Bean Validation과 원활하게 연동 가능
 
-| 어노테이션 | 용도 |
-| --- | --- |
-| `@NotNull` | 값이 null이 아닌지 확인 |
-| `@NotBlank` | 문자열이 null, 빈 문자(""), 공백 문자(" ")가 아닌지 확인 |
-| `@NotEmpty` | null, "" 체크 & " " 허용<br>List나 Map이 null이거나 크기가 0이 아닌지 확인 |
-| `@Max` | 지정 값 이하의 수치인지 확인 |
-| `@Min` | 지정 값 이상의 수치인지 확인 |
-| `@Size` | 문자열 길이나 List, Map의 요소 수가 최소 및 최대 범위인지 확인<br>`@Size(min=5, max=10)`은 5이상이고 10이하인지 확인 |
-| `@Email` | 이메일 주소 형식 확인 |
-| `@Pattern` | 지정한 정규 표현에 맞는지 확인 |
+| 애너테이션         | 용도 |
+|---------------| --- |
+| `@NotNull`    | 값이 null이 아닌지 확인 |
+| `@NotBlank`   | 문자열이 null, 빈 문자(""), 공백 문자(" ")가 아닌지 확인 |
+| `@NotEmpty`   | null, "" 체크 & " " 허용<br>List나 Map이 null이거나 크기가 0이 아닌지 확인 |
+| `@Max`        | 지정 값 이하의 수치인지 확인 |
+| `@Min`        | 지정 값 이상의 수치인지 확인 |
+| `@Size`       | 문자열 길이나 List, Map의 요소 수가 최소 및 최대 범위인지 확인<br>`@Size(min=5, max=10)`은 5이상이고 10이하인지 확인 |
+| `@Email`      | 이메일 주소 형식 확인 |
+| `@Pattern`    | 지정한 정규 표현에 맞는지 확인 |
 | `@AssertTrue` | Boolean 타입인 필드 혹은 메서드의 반환 값이 True인지 확인 |
 
 ---

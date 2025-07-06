@@ -53,7 +53,7 @@
 
 ---
 
-## DI 컨테이너를 생성하기 위한 어노테이션
+## DI 컨테이너를 생성하기 위한 애너테이션
 + @SpringBootTest
   + 일반 DI 컨테이너와 기본적으로 동일하게 동작하는 DI 컨테이너를 생성
   + E2E 테스트 및 통합 테스트에 사용
@@ -62,12 +62,12 @@
   + Controller 단위 테스트를 수행할 때 사용
 + @JdbcTest, @DataJpaTest, @MybatisTest 등
   + 데이터베이스 접근 관련 설정만 하도록 자동 설정 및 컴포넌트 스캔을 제한한 DI 컨테이너를 생성
-  + 데이터베이스 접근 방식(JDBC, JPA, MyBatis 등)마다 별도의 어노테이션 존재
+  + 데이터베이스 접근 방식(JDBC, JPA, MyBatis 등)마다 별도의 애너테이션 존재
   + Repository 단위 테스트를 수행할 때 사용
 
 ## 테스트 클래스
 ```java
-@SpringBootTest    //DI 컨테이너를 생성하기 위한 어노테이션
+@SpringBootTest    //DI 컨테이너를 생성하기 위한 애너테이션
 class SampleTest {
     @Autowired
     SomeBean someBean;    //테스트 대상인 SomeBean 객체를 주입

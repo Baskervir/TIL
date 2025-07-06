@@ -3,7 +3,7 @@ Spring Boot Initializr
     - 거의 모든 프로젝트가 여기서 시작
 
 @SpringBootApplication
-    - @Configuration, @EnableAutoConfiguration, @ComponentScan 을 묶은 어노테이션
+    - @Configuration, @EnableAutoConfiguration, @ComponentScan 을 묶은 애너테이션
     - 애플리케이션의 시작점이자 구성의 중심
 
 main() 메서드

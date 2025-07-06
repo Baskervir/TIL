@@ -4,7 +4,7 @@
 
 ---
 
-## DI 컨테이너를 생성하기 위한 어노테이션
+## DI 컨테이너를 생성하기 위한 애너테이션
 ```java
 @JdbcTest    //자동으로 DI 컨테이너 생성 & JavaConfig클래스 명시 X > 자동으로 JavaConfig 클래스를 찾는다 (main 메서드를 가진 JavaConfig 클래스가 로드) + 컴포넌트 스캔 제한 > @Repository Bean 등록 X
 class JdbcTrainingRepositoryTest {
@@ -87,7 +87,7 @@ class JdbcReservationRepositoryTest {
 
 ---
 
-## @SQL 어노테이션
+## @SQL 애너테이션
 ```java
 //@Sql을 붙여 괄호아네 SQL이 작성된 파일 지정
 @Test
@@ -114,7 +114,7 @@ void test_selectById() {
   ...
 }
 ```
-+ `@Sql`어노테이션으로 SQL 파일 여러 개를 지정할 수 있다
++ `@Sql`애너테이션으로 SQL 파일 여러 개를 지정할 수 있다
   + 지정된 순서대로 SQL 파일에 기재된 SQL이 실행된다
   + 메서드뿐만 아니라 클래스에도 적용할 수 있다
     + 클래스에 적용한 경우, 테스트 클래스에 속한 모든 테스트 메서드에서 지정된 SQL 파일이 실행
