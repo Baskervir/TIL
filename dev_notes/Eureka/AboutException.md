@@ -1,8 +1,9 @@
+```text
 [Controller] → [Service] → [Repository]
                           ↘ (예외 발생)
                             → 위로 전달됨
                               → @ControllerAdvice의 @ExceptionHandler가 잡음
-
+```
 즉, Service나 Repository에서는 try-catch가 없음
 
 ExceptionHandler만 있음 → 결과는 보냈지만 예외 원인은 제어하지 않았다 [결과 처리]
