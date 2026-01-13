@@ -15,8 +15,8 @@
 
 > **참고 문헌:** [McCrae & Costa (1987) - Validation of the five-factor model of personality](https://psycnet.apa.org/record/1987-11119-001)
 
-## 2. 발생한 문제: 데이터 무색무취화 (중심극한정리)
-초기 모델은 상호작용 발생 시 5차원 벡터 전체를 일괄 업데이트하는 구조였습니다. 그러나 데이터가 축적될수록 모든 점수가 평균값(**5.0**)으로 수렴하는 **중심극한정리(Central Limit Theorem)** 현상이 발생했습니다. 변별력이 거세된 데이터를 방지하기 위해 **연산의 선택성**과 **방어 기제**라는 두 가지 해법을 도입했습니다.
+## 2. 발생한 문제: 데이터 무색무취화 (평균 회귀 경향)
+초기 모델은 상호작용 발생 시 5차원 벡터 전체를 일괄 업데이트하는 구조였습니다. 그러나 데이터 업데이트 과정에서 모든 차원이 균등하게 수렴하면 개별 특성이 사라지는 **평균 회귀 경향 (Regression to the mean)** 현상이 발생했습니다. 변별력이 소실된 데이터를 방지하기 위해 **연산의 선택성**과 **방어 기제**라는 두 가지 개념을 도입했습니다.
 
 * **관련 개념:** [Central Limit Theorem - Wolfram MathWorld](https://mathworld.wolfram.com/CentralLimitTheorem.html)
 ---
